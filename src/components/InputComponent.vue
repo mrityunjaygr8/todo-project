@@ -1,11 +1,13 @@
 <template>
     <div class="container">
-        <div class="d-flex">
+        <div>
             <input v-model="task" type="text" placeholder="enter the task" class="form-control">
-            <button @click="submitTask" class="btn btn-dark">Submit</button>
+            <button @click="submitTask" class="btn btn-dark mt-2" :disabled="isDisabled"><span class="fas fa-plus"></span></button>
         </div>
 
-        <table class="table table-hover table-bordered mt-5">
+        <H1 class="mt-3">TODO List</H1>
+
+        <table class="table table-hover table-bordered mt-3">
             <thead>
                 <th>Task</th>
                 <th>Status</th>
@@ -25,7 +27,7 @@
 </template>
 
 <script>
-//import * as fb from '@/firebaseApi.js'
+import firebase from '@/firebaseApi.js'
 export default {
     name: 'InputComponent',
     data(){
@@ -43,17 +45,21 @@ export default {
             ]
         }
     },
+    computed:{
+        isDisabled(){
+            return this.task.length == 0;
+        }
+    },
     methods:{
         submitTask(){
-            if(this.task.length === 0){
-                alert("please enter the task");
-            }
+            // if(this.task.length === 0){
+            //     alert("please enter the task");
+            // }
             this.tasks.push({
                 name: this.task,
                 status: "to-do"
             })
             this.task= '';
-           // console.warn(fb.db.tasksCollection)
         },
         editTask(index){
             this.task = this.tasks[index].name;
@@ -61,6 +67,10 @@ export default {
         deleteTask(index){
             this.tasks.splice(index, 1)
         }
+    },
+    mounted(){
+        const db = firebase.database().ref()    ;
+        console.warn(db)
     }
 }
 </script>
